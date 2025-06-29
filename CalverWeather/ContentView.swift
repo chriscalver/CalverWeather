@@ -12,6 +12,10 @@ struct CurrentModel: Codable {
             let Value: Decimal
         }
         let Metric: Metric
+        struct Imperial: Codable {
+            let Value: Decimal
+        }
+        let Imperial: Imperial
     }
 }
 
@@ -38,19 +42,15 @@ struct ForecastModel: Codable {
 
 struct ContentView: View {
     @State var currents: [CurrentModel] = []
-    //@State var forecasts: [ForecastModel] = []
     @State var forecast: ForecastModel?
     @State var lastUpdated: String = ""
     @State var minTemp: Decimal = 0
     @State var maxTemp: Decimal = 0
-     
-//    var minMaxText: String {
-//        guard let forecast = forecast,
-//              let firstDay = forecast.DailyForecasts.first else { return "" }
-//        let min = firstDay.Temperature.Minimum.Value
-//        let max = firstDay.Temperature.Maximum.Value
-//        return "Min: \(min)°C  Max: \(max)°C"
-//    }
+    @State private var taskIsComplete = false   // for haptics
+    
+    @AppStorage("tapCount") private var tapCount = 0   //for tapcount
+    @AppStorage("isMetric") private var isMetric = true
+    
     
     var body: some View {
         VStack {
@@ -63,46 +63,45 @@ struct ContentView: View {
                 .foregroundStyle(.black)
                 .font(.system(size: 28))
                 .preferredColorScheme(.light)
-            Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Metric.Value)c")
-                .font(.system(size: 56))
+            
+            if(isMetric) {
+                Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Metric.Value)c")
+                    .font(.system(size: 56))
+            } else {
+                Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Imperial.Value) F")
+                    .font(.system(size: 56))
+            }
+            
             Text(currents.isEmpty ? "" : "\(currents[0].WeatherText)")
                 .font(.system(size: 26))
             
-            Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(maxTemp)")
-                .font(.system(size: 18))
-            
-//            HStack {
-//                Text("Min:")
-//                    .font(.system(size: 16))
-//                Text(minTemp == 0 ? "N/A" : "\(minTemp)")
-//                    .font(.system(size: 16))
-//
-//            }
-//            HStack {
-//                Text("Max:")
-//                    .font(.system(size: 16))
-//                Text(maxTemp == 0 ? "N/A" : "\(maxTemp)")
-//                    .font(.system(size: 16))
-//
-//            }
-//            Text(minMaxText)
-//            Text(currents.isEmpty ? "" : "\(currents[0].EpochTime)")
-//                .font(.system(size: 26))
-//            
-//            Text(forecast?.Headline.Text ?? "No forecast available")
-//                .font(.system(size: 20))
-//                .padding(.top, 20)
-//                .padding(.bottom, 20)
+            if(isMetric){
+                Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(maxTemp)")
+                    .font(.system(size: 18))
+            } else {
+                
+                Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(String(format: "%.1f", NSDecimalNumber(decimal: maxTemp * 1.8 + 32).doubleValue))")
+                    .font(.system(size: 18))
+            }
             
             
             
+            Toggle(isOn: $isMetric) {
+                    Text("Metric")
+            }.font(.system(size: 18))
+            .frame(width: 115, height: 20, alignment: .center)
+//            Button("Tap count: \(tapCount)") {
+//                        tapCount += 1
+//                    }
             Spacer()
             
             Button("Refresh Data") {
+                taskIsComplete = true
                 grabCurrentData()
             }
             .buttonStyle(.borderedProminent)
             .tint(Color(red: 1.0, green: 0.0, blue: 0.0, opacity: 1.0))
+            .sensoryFeedback(.success, trigger: taskIsComplete)
             HStack {
                 Text("Last updated:")
                     .font(.system(size: 16))
