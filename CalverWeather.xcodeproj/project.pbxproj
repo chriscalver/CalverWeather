@@ -6,7 +6,36 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		0E47D7BB2E12A34400326DF7 /* Watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 0E47D7B02E12A34300326DF7 /* Watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0E47D7B82E12A34400326DF7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0ED5C2F72E00664B00BCDAED /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0E47D7AF2E12A34300326DF7;
+			remoteInfo = "Watch Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0E47D7BA2E12A34400326DF7 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				0E47D7BB2E12A34400326DF7 /* Watch Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0E47D7B02E12A34300326DF7 /* Watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0ED5C2FF2E00664B00BCDAED /* CalverWeather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalverWeather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -21,6 +50,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		0E47D7B12E12A34300326DF7 /* Watch Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Watch Watch App";
+			sourceTree = "<group>";
+		};
 		0ED5C3012E00664B00BCDAED /* CalverWeather */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -32,6 +66,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0E47D7AD2E12A34300326DF7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0ED5C2FC2E00664B00BCDAED /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -46,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				0ED5C3012E00664B00BCDAED /* CalverWeather */,
+				0E47D7B12E12A34300326DF7 /* Watch Watch App */,
 				0ED5C3002E00664B00BCDAED /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				0ED5C2FF2E00664B00BCDAED /* CalverWeather.app */,
+				0E47D7B02E12A34300326DF7 /* Watch Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -61,6 +104,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0E47D7AF2E12A34300326DF7 /* Watch Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0E47D7BE2E12A34400326DF7 /* Build configuration list for PBXNativeTarget "Watch Watch App" */;
+			buildPhases = (
+				0E47D7AC2E12A34300326DF7 /* Sources */,
+				0E47D7AD2E12A34300326DF7 /* Frameworks */,
+				0E47D7AE2E12A34300326DF7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				0E47D7B12E12A34300326DF7 /* Watch Watch App */,
+			);
+			name = "Watch Watch App";
+			packageProductDependencies = (
+			);
+			productName = "Watch Watch App";
+			productReference = 0E47D7B02E12A34300326DF7 /* Watch Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
 		0ED5C2FE2E00664B00BCDAED /* CalverWeather */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0ED5C30A2E00664C00BCDAED /* Build configuration list for PBXNativeTarget "CalverWeather" */;
@@ -68,10 +133,12 @@
 				0ED5C2FB2E00664B00BCDAED /* Sources */,
 				0ED5C2FC2E00664B00BCDAED /* Frameworks */,
 				0ED5C2FD2E00664B00BCDAED /* Resources */,
+				0E47D7BA2E12A34400326DF7 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				0E47D7B92E12A34400326DF7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				0ED5C3012E00664B00BCDAED /* CalverWeather */,
@@ -90,9 +157,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1630;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
+					0E47D7AF2E12A34300326DF7 = {
+						CreatedOnToolsVersion = 16.4;
+					};
 					0ED5C2FE2E00664B00BCDAED = {
 						CreatedOnToolsVersion = 16.3;
 					};
@@ -113,11 +183,19 @@
 			projectRoot = "";
 			targets = (
 				0ED5C2FE2E00664B00BCDAED /* CalverWeather */,
+				0E47D7AF2E12A34300326DF7 /* Watch Watch App */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0E47D7AE2E12A34300326DF7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0ED5C2FD2E00664B00BCDAED /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -128,6 +206,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0E47D7AC2E12A34300326DF7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0ED5C2FB2E00664B00BCDAED /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -137,7 +222,73 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		0E47D7B92E12A34400326DF7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0E47D7AF2E12A34300326DF7 /* Watch Watch App */;
+			targetProxy = 0E47D7B82E12A34400326DF7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		0E47D7BC2E12A34400326DF7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RX3KQM8FY6;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Watch;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = CGC.CalverWeather;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = CGC.CalverWeather.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.5;
+			};
+			name = Debug;
+		};
+		0E47D7BD2E12A34400326DF7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RX3KQM8FY6;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Watch;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = CGC.CalverWeather;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = CGC.CalverWeather.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.5;
+			};
+			name = Release;
+		};
 		0ED5C3082E00664C00BCDAED /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -320,6 +471,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0E47D7BE2E12A34400326DF7 /* Build configuration list for PBXNativeTarget "Watch Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0E47D7BC2E12A34400326DF7 /* Debug */,
+				0E47D7BD2E12A34400326DF7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		0ED5C2FA2E00664B00BCDAED /* Build configuration list for PBXProject "CalverWeather" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

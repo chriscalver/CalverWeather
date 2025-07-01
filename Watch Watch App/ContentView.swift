@@ -55,33 +55,33 @@ struct ContentView: View {
     var body: some View {
         VStack {
             Image(systemName: "baseball.diamond.bases")
-                .font(.system(size: 180))
+                .font(.system(size: 50))
                 .foregroundStyle(.red)
-                .padding(.top, 90)
-                .padding(.bottom, 10)
+                .padding(.top, -20)
+              //  .padding(.bottom, 10)
             Text("Calver Weather App")
-                .foregroundStyle(.black)
-                .font(.system(size: 28))
+//                .foregroundStyle(.black)
+                .font(.system(size: 14))
                 .preferredColorScheme(.light)
             
             if(isMetric) {
                 Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Metric.Value)c")
-                    .font(.system(size: 56))
+                    .font(.system(size: 26))
             } else {
                 Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Imperial.Value)")
-                    .font(.system(size: 56))
+                    .font(.system(size: 26))
             }
             
             Text(currents.isEmpty ? "" : "\(currents[0].WeatherText)")
-                .font(.system(size: 26))
+                .font(.system(size: 14))
             
             if(isMetric){
                 Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(maxTemp) c")
-                    .font(.system(size: 18))
+                    .font(.system(size: 14))
             } else {
                 
                 Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(String(format: "%.1f", NSDecimalNumber(decimal: maxTemp * 1.8 + 32).doubleValue))")
-                    .font(.system(size: 18))
+                    .font(.system(size: 14))
             }
             
             
@@ -89,27 +89,35 @@ struct ContentView: View {
             Toggle(isOn: $isMetric) {
                     Text("Metric")
             }
-            .font(.system(size: 18))
+            .font(.system(size: 14))
             .frame(width: 115, height: 20, alignment: .center)
-            .padding(.top, 19)
+            .padding(.top, 5)
+            .padding(.bottom, 5)
 //            Button("Tap count: \(tapCount)") {
 //                        tapCount += 1
 //                    }
             Spacer()
             
+            
+            
+            
+            
+            HStack {
+                Text("Last updated:")
+                    .font(.system(size: 10))
+                Text(lastUpdated)
+                    .font(.system(size: 12))
+            }
             Button("Refresh Data") {
                 taskIsComplete = true
                 grabCurrentData()
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.borderless)
             .tint(Color(red: 1.0, green: 0.0, blue: 0.0, opacity: 1.0))
             .sensoryFeedback(.success, trigger: taskIsComplete)
-            HStack {
-                Text("Last updated:")
-                    .font(.system(size: 16))
-                Text(lastUpdated)
-                    .font(.system(size: 16))
-            }
+            .padding(.top, 0)
+            .font(.system(size: 12))
+
         }
         .task {
             grabCurrentData()
