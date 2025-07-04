@@ -40,8 +40,20 @@ struct ForecastModel: Codable {
     let DailyForecasts: [DailyForecast]
 }
 
+struct DailyTwelveHourForecast: Codable {
+    let EpochDateTime: Int
+    let IconPhrase: String
+    
+    struct Temperature: Codable {
+        let Value: Decimal
+    }
+    let Temperature: Temperature
+    
+}
+
 struct ContentView: View {
     @State var currents: [CurrentModel] = []
+    @State var twelveHourForecasts: [DailyTwelveHourForecast] = []
     @State var forecast: ForecastModel?
     @State var lastUpdated: String = ""
     @State var minTemp: Decimal = 0
@@ -53,69 +65,140 @@ struct ContentView: View {
     
     
     var body: some View {
-        VStack {
-            Image(systemName: "baseball.diamond.bases")
-                .font(.system(size: 180))
-                .foregroundStyle(.red)
-                .padding(.top, 90)
-                .padding(.bottom, 10)
-            Text("Calver Weather App")
-                .foregroundStyle(.black)
-                .font(.system(size: 28))
-                .preferredColorScheme(.light)
+        ZStack {
             
-            if(isMetric) {
-                Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Metric.Value)c")
-                    .font(.system(size: 56))
-            } else {
-                Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Imperial.Value)")
-                    .font(.system(size: 56))
-            }
-            
-            Text(currents.isEmpty ? "" : "\(currents[0].WeatherText)")
-                .font(.system(size: 26))
-            
-            if(isMetric){
-                Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(maxTemp) c")
-                    .font(.system(size: 18))
-            } else {
+            VStack {
                 
-                Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(String(format: "%.1f", NSDecimalNumber(decimal: maxTemp * 1.8 + 32).doubleValue))")
-                    .font(.system(size: 18))
-            }
-            
-            
-            
-            Toggle(isOn: $isMetric) {
+                Image(systemName: "baseball.diamond.bases")
+                    .font(.system(size: 180))
+                    .foregroundStyle(.red)
+                    .padding(.top, 60)
+                    .padding(.bottom, 10)
+                
+                Text("Calver Weather App")
+//                     .foregroundStyle(.black)
+                    .font(.system(size: 28))
+//                    .preferredColorScheme(.light)
+                
+                if(isMetric) {
+                    Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Metric.Value)c")
+                        .font(.system(size: 56))
+                } else {
+                    Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Imperial.Value)")
+                        .font(.system(size: 56))
+                }
+                
+                Text(currents.isEmpty ? "" : "\(currents[0].WeatherText)")
+                    .font(.system(size: 26))
+                
+                if(isMetric){
+                    Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(maxTemp) c")
+                        .font(.system(size: 18))
+                } else {
+                    
+                    Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(String(format: "%.1f", NSDecimalNumber(decimal: maxTemp * 1.8 + 32).doubleValue))")
+                        .font(.system(size: 18))
+                }
+                
+                
+                
+                Toggle(isOn: $isMetric) {
                     Text("Metric")
+                }
+                .font(.system(size: 18))
+                .frame(width: 115, height: 20, alignment: .center)
+                .padding(.top, 19)
+                //            Button("Tap count: \(tapCount)") {
+                //                        tapCount += 1
+                //                    }
+                
+                Spacer()
+                Text("Forecast:")
+                    .font(.system(size: 20))
+                    .padding(.bottom, 0)
+                if let headline = forecast?.Headline.Text {
+                    Text(headline)
+                        .font(.system(size: 16))
+                        .padding(.bottom, 10)
+                } else {
+                    Text("No forecast available")
+                        .font(.system(size: 16))
+                        .padding(.bottom, 0)
+                }
+                ScrollView(.horizontal) {
+                    LazyHStack {
+                        ForEach(twelveHourForecasts, id: \.EpochDateTime) { forecast in
+                            VStack {
+                                let date = Date(timeIntervalSince1970: TimeInterval(forecast.EpochDateTime))
+                Text(date, style: .time)
+                                    .font(.system(size: 16))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color.white)
+                                    .padding(.top, 2)
+                                Text("\(String(format: "%.1f", NSDecimalNumber(decimal: forecast.Temperature.Value).doubleValue))°")
+                                    .font(.system(size: 16))
+                                    .foregroundColor(Color.white)
+                                Text(forecast.IconPhrase)
+                                    .font(.system(size: 16))
+                                    .foregroundColor(Color.white)
+                            }
+                            .frame(width: 250, height: 60)
+//                            .background(Color(.secondarySystemBackground))
+                            .background(Color("AccentColor"))
+
+                            .cornerRadius(8)
+                            
+                        }
+                        
+                        
+//                        ForEach(1..<12) { index in
+//                            HStack(alignment: .center) {
+//                                
+//                                Text("View \(index)")
+//                                Text("View \(index)")
+//                            }
+//                        }
+//                        .frame(width: 250, height: 70)
+//                        .background(Color("AccentColor"))
+//                        .cornerRadius(10)
+                    }
+                    .scrollTargetLayout()
+                }
+                .frame(width: 250, height: 100)
+                .scrollTargetBehavior(.viewAligned)
+                .safeAreaPadding(.leading, 0)
+                .scrollIndicators(.hidden)
+                
+                
+                
+                
+                Spacer()
+                    
+                
+                Button("Refresh Data") {
+                    taskIsComplete = true
+                    grabCurrentData()
+                    grabForecastData()
+                    grabTwelveHour()
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(Color("AccentColor"))
+                .sensoryFeedback(.success, trigger: taskIsComplete)
+                HStack {
+                    Text("Last updated:")
+                        .font(.system(size: 16))
+                    Text(lastUpdated)
+                        .font(.system(size: 16))
+                }
             }
-            .font(.system(size: 18))
-            .frame(width: 115, height: 20, alignment: .center)
-            .padding(.top, 19)
-//            Button("Tap count: \(tapCount)") {
-//                        tapCount += 1
-//                    }
-            Spacer()
-            
-            Button("Refresh Data") {
-                taskIsComplete = true
+            .task {
                 grabCurrentData()
+                grabForecastData()
+                grabTwelveHour()
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color(red: 1.0, green: 0.0, blue: 0.0, opacity: 1.0))
-            .sensoryFeedback(.success, trigger: taskIsComplete)
-            HStack {
-                Text("Last updated:")
-                    .font(.system(size: 16))
-                Text(lastUpdated)
-                    .font(.system(size: 16))
-            }
-        }
-        .task {
-            grabCurrentData()
-            grabForecastData()
         }
     }
+    
     func grabCurrentData() {
         Task {
             do {
@@ -123,18 +206,18 @@ struct ContentView: View {
                 let (data, response) = try await URLSession.shared.data(
                     from: url!
                 )
-                
                 if let response = response as? HTTPURLResponse {
                     if (200...299).contains(response.statusCode) {
                         print("CurrentGood")
+                        print(response.statusCode)
                     } else {
                         print("CurrentBad")
+                        print(response.statusCode)
                     }
                 }
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 currents = try decoder.decode([CurrentModel].self, from: data)
-                
                 if let epoch = currents.first?.EpochTime {
                     let date = Date(timeIntervalSince1970: TimeInterval(epoch))
                     let formatter = DateFormatter()
@@ -142,11 +225,38 @@ struct ContentView: View {
                         formatter.dateStyle = .none
                     lastUpdated = formatter.string(from: date)
                 }
-                print(lastUpdated)
+//                print(currents)
+//                print(lastUpdated)
             } catch {
                 //                currents = []
             }
-            
+        }
+    }
+    func grabTwelveHour() {
+        Task {
+            do {
+                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H&details=true&metric=true")
+                let (data, response) = try await URLSession.shared.data(
+                    from: url!
+                )
+                if let response = response as? HTTPURLResponse {
+                    if (200...299).contains(response.statusCode) {
+                        print("TwelveHour Good")
+                        print(response.statusCode)
+                    } else {
+                        print("TwelveHour Bad")
+                        print(response.statusCode)
+                    }
+                }
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                twelveHourForecasts = try decoder.decode([DailyTwelveHourForecast].self, from: data)
+                 
+//                print(twelveHourForecasts)
+                
+            } catch {
+                //                currents = []
+            }
         }
     }
     func grabForecastData() {
@@ -156,12 +266,13 @@ struct ContentView: View {
             let (data, response) = try await URLSession.shared.data(
                 from: url!
             )
-            
             if let response = response as? HTTPURLResponse {
                 if (200...299).contains(response.statusCode) {
                     print("ForecastGood")
+                    print(response.statusCode)
                 } else {
                     print("ForecastBad")
+                    print(response.statusCode)
                 }
             }
             let decoder = JSONDecoder()
@@ -169,8 +280,6 @@ struct ContentView: View {
             forecast = try decoder.decode(ForecastModel.self, from: data)
             maxTemp = forecast?.DailyForecasts.first?.Temperature.Maximum.Value ?? 0
             minTemp = forecast?.DailyForecasts.first?.Temperature.Minimum.Value ?? 0
-//            print(forecast?.DailyForecasts.first?.Temperature.Maximum.Value ?? "No forecast available")
-            
         } catch {
             //                currents = []
         }
