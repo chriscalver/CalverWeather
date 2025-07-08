@@ -24,7 +24,9 @@ struct ForecastModel: Codable {
         let Text: String
     }
     let Headline: Headline
+    
     struct DailyForecast: Codable {
+        let EpochDate: Int
         struct Temperature: Codable {
             struct Minimum: Codable {
                 let Value: Decimal
@@ -36,6 +38,15 @@ struct ForecastModel: Codable {
             let Maximum: Maximum
         }
         let Temperature: Temperature
+        
+        struct Day: Codable {
+            let IconPhrase: String
+        }
+        struct Night: Codable {
+            let IconPhrase: String
+        }
+        let Day: Day
+        let Night: Night
     }
     let DailyForecasts: [DailyForecast]
 }
@@ -48,7 +59,6 @@ struct DailyTwelveHourForecast: Codable {
         let Value: Decimal
     }
     let Temperature: Temperature
-    
 }
 
 struct ContentView: View {
@@ -68,17 +78,20 @@ struct ContentView: View {
         ZStack {
             
             VStack {
-                
+                Spacer()
                 Image(systemName: "baseball.diamond.bases")
-                    .font(.system(size: 180))
+                    .font(.system(size: 160))
                     .foregroundStyle(.red)
-                    .padding(.top, 60)
+                    .padding(.top, 0)
                     .padding(.bottom, 10)
                 
                 Text("Calver Weather App")
-//                     .foregroundStyle(.black)
+                //                     .foregroundStyle(.black)
                     .font(.system(size: 28))
-//                    .preferredColorScheme(.light)
+                //                    .preferredColorScheme(.light)
+                Text(minTemp == 0 ? "" : "Min:\(String(format: "%.1f", NSDecimalNumber(decimal: minTemp).doubleValue))")
+                    .font(.system(size: 20))
+                
                 
                 if(isMetric) {
                     Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Metric.Value)c")
@@ -100,67 +113,55 @@ struct ContentView: View {
                         .font(.system(size: 18))
                 }
                 
-                
-                
                 Toggle(isOn: $isMetric) {
                     Text("Metric")
                 }
                 .font(.system(size: 18))
                 .frame(width: 115, height: 20, alignment: .center)
-                .padding(.top, 19)
+                .padding(.top, 10)
                 //            Button("Tap count: \(tapCount)") {
                 //                        tapCount += 1
                 //                    }
                 
-                Spacer()
-                Text("Forecast:")
-                    .font(.system(size: 20))
-                    .padding(.bottom, 0)
+//                Spacer()
+                
+                Text("Current Conditions:")
+                    .padding(.top, 10)
+                
                 if let headline = forecast?.Headline.Text {
                     Text(headline)
                         .font(.system(size: 16))
-                        .padding(.bottom, 10)
+                        .padding(.bottom, 5)
                 } else {
                     Text("No forecast available")
                         .font(.system(size: 16))
-                        .padding(.bottom, 0)
+                        .padding(.bottom, 5)
                 }
+                
+                Text("Hourly Forecast:")
+                    .font(.system(size: 16))
+                    .padding(.bottom, -5)
                 ScrollView(.horizontal) {
                     LazyHStack {
                         ForEach(twelveHourForecasts, id: \.EpochDateTime) { forecast in
                             VStack {
                                 let date = Date(timeIntervalSince1970: TimeInterval(forecast.EpochDateTime))
-                Text(date, style: .time)
-                                    .font(.system(size: 16))
+                                Text(date, style: .time)
+                                    .font(.system(size: 14))
                                     .fontWeight(.bold)
                                     .foregroundColor(Color.white)
                                     .padding(.top, 2)
                                 Text("\(String(format: "%.1f", NSDecimalNumber(decimal: forecast.Temperature.Value).doubleValue))°")
-                                    .font(.system(size: 16))
+                                    .font(.system(size: 14))
                                     .foregroundColor(Color.white)
                                 Text(forecast.IconPhrase)
-                                    .font(.system(size: 16))
+                                    .font(.system(size: 14))
                                     .foregroundColor(Color.white)
                             }
                             .frame(width: 250, height: 60)
-//                            .background(Color(.secondarySystemBackground))
                             .background(Color("AccentColor"))
-
                             .cornerRadius(8)
-                            
                         }
-                        
-                        
-//                        ForEach(1..<12) { index in
-//                            HStack(alignment: .center) {
-//                                
-//                                Text("View \(index)")
-//                                Text("View \(index)")
-//                            }
-//                        }
-//                        .frame(width: 250, height: 70)
-//                        .background(Color("AccentColor"))
-//                        .cornerRadius(10)
                     }
                     .scrollTargetLayout()
                 }
@@ -168,13 +169,55 @@ struct ContentView: View {
                 .scrollTargetBehavior(.viewAligned)
                 .safeAreaPadding(.leading, 0)
                 .scrollIndicators(.hidden)
+                .padding(.bottom, -20)
+                .padding(.top, -20)
                 
+                Text("Daily Forecast:")
+                    .font(.system(size: 16))
+                    .padding(.bottom, -15)
                 
-                
-                
-                Spacer()
-                    
-                
+                ScrollView(.horizontal) {
+                    LazyHStack {
+                        if let dailyForecasts = forecast?.DailyForecasts {
+                            ForEach(0..<dailyForecasts.count, id: \.self) { index in
+                                let day = dailyForecasts[index]
+                                let date = Date(timeIntervalSince1970: TimeInterval(day.EpochDate))
+                                var formatter: DateFormatter {
+                                    let f = DateFormatter()
+                                    f.dateFormat = "EEEE"
+                                    return f
+                                }
+                                VStack(alignment: .leading) {
+                                    Text(formatter.string(from: date))
+                                        .font(.system(size: 16))
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                    Text("Day: \(day.Day.IconPhrase)")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.white)
+                                    Text("Night: \(day.Night.IconPhrase)")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.white)
+                                    Text("Min: \(String(format: "%.1f", NSDecimalNumber(decimal: day.Temperature.Minimum.Value).doubleValue))°")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.white)
+                                    Text("Max: \(String(format: "%.1f", NSDecimalNumber(decimal: day.Temperature.Maximum.Value).doubleValue))°")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.white)
+                                }
+                                .frame(width: 250, height: 100)
+                                .background(Color("AccentColor"))
+                                .cornerRadius(8)
+                            }
+                        }
+                    }
+                    .scrollTargetLayout()
+                }
+                .frame(width: 250, height: 120)
+                .scrollTargetBehavior(.viewAligned)
+                .safeAreaPadding(.leading, 0)
+                .scrollIndicators(.hidden)
+//                Spacer()
                 Button("Refresh Data") {
                     taskIsComplete = true
                     grabCurrentData()
@@ -185,7 +228,7 @@ struct ContentView: View {
                 .tint(Color("AccentColor"))
                 .sensoryFeedback(.success, trigger: taskIsComplete)
                 HStack {
-                    Text("Last updated:")
+                    Text("Last API update:")
                         .font(.system(size: 16))
                     Text(lastUpdated)
                         .font(.system(size: 16))
@@ -222,11 +265,11 @@ struct ContentView: View {
                     let date = Date(timeIntervalSince1970: TimeInterval(epoch))
                     let formatter = DateFormatter()
                     formatter.timeStyle = .short
-                        formatter.dateStyle = .none
+                    formatter.dateStyle = .none
                     lastUpdated = formatter.string(from: date)
                 }
-//                print(currents)
-//                print(lastUpdated)
+                //                print(currents)
+                //                print(lastUpdated)
             } catch {
                 //                currents = []
             }
@@ -251,8 +294,8 @@ struct ContentView: View {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 twelveHourForecasts = try decoder.decode([DailyTwelveHourForecast].self, from: data)
-                 
-//                print(twelveHourForecasts)
+                
+                //                print(twelveHourForecasts)
                 
             } catch {
                 //                currents = []
@@ -260,31 +303,32 @@ struct ContentView: View {
         }
     }
     func grabForecastData() {
-    Task {
-        do {
-            let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/daily/1day/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H&metric=true")
-            let (data, response) = try await URLSession.shared.data(
-                from: url!
-            )
-            if let response = response as? HTTPURLResponse {
-                if (200...299).contains(response.statusCode) {
-                    print("ForecastGood")
-                    print(response.statusCode)
-                } else {
-                    print("ForecastBad")
-                    print(response.statusCode)
+        Task {
+            do {
+                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/daily/5day/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H&metric=true")
+                let (data, response) = try await URLSession.shared.data(
+                    from: url!
+                )
+                if let response = response as? HTTPURLResponse {
+                    if (200...299).contains(response.statusCode) {
+                        print("ForecastGood")
+                        print(response.statusCode)
+                    } else {
+                        print("ForecastBad")
+                        print(response.statusCode)
+                    }
                 }
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                forecast = try decoder.decode(ForecastModel.self, from: data)
+                maxTemp = forecast?.DailyForecasts.first?.Temperature.Maximum.Value ?? 0
+                //            minTemp = forecast?.DailyForecasts.first?.Temperature.Minimum.Value ?? 0
+                minTemp = forecast?.DailyForecasts[2].Temperature.Minimum.Value ?? 0
+            } catch {
+                //                currents = []
             }
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            forecast = try decoder.decode(ForecastModel.self, from: data)
-            maxTemp = forecast?.DailyForecasts.first?.Temperature.Maximum.Value ?? 0
-            minTemp = forecast?.DailyForecasts.first?.Temperature.Minimum.Value ?? 0
-        } catch {
-            //                currents = []
         }
     }
-}
 }
 #Preview {
     ContentView()
