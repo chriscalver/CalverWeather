@@ -78,11 +78,11 @@ struct ContentView: View {
         ZStack {
             
             VStack {
-                Spacer()
+//                Spacer()
                 Image(systemName: "baseball.diamond.bases")
                     .font(.system(size: 160))
                     .foregroundStyle(.red)
-                    .padding(.top, 0)
+                    .padding(.top, 50)
                     .padding(.bottom, 10)
                 
                 Text("Calver Weather App")
@@ -217,7 +217,7 @@ struct ContentView: View {
                 .scrollTargetBehavior(.viewAligned)
                 .safeAreaPadding(.leading, 0)
                 .scrollIndicators(.hidden)
-//                Spacer()
+                Spacer()
                 Button("Refresh Data") {
                     taskIsComplete = true
                     grabCurrentData()
@@ -245,7 +245,7 @@ struct ContentView: View {
     func grabCurrentData() {
         Task {
             do {
-                let url = URL(string: "https://dataservice.accuweather.com/currentconditions/v1/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H")
+                let url = URL(string: "https://dataservice.accuweather.com/currentconditions/v1/55489?apikey=BkI6MZNn1sO1hfoyGoO6fP0Wjun7Xz35")
                 let (data, response) = try await URLSession.shared.data(
                     from: url!
                 )
@@ -278,7 +278,7 @@ struct ContentView: View {
     func grabTwelveHour() {
         Task {
             do {
-                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H&details=true&metric=true")
+                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/55489?apikey=BkI6MZNn1sO1hfoyGoO6fP0Wjun7Xz35&details=true&metric=true")
                 let (data, response) = try await URLSession.shared.data(
                     from: url!
                 )
@@ -305,7 +305,7 @@ struct ContentView: View {
     func grabForecastData() {
         Task {
             do {
-                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/daily/5day/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H&metric=true")
+                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/daily/5day/55489?apikey=BkI6MZNn1sO1hfoyGoO6fP0Wjun7Xz35&metric=true")
                 let (data, response) = try await URLSession.shared.data(
                     from: url!
                 )
