@@ -265,7 +265,8 @@ struct ContentView: View {
     func grabCurrentData() {
         Task {
             do {
-                let url = URL(string: "https://dataservice.accuweather.com/currentconditions/v1/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H")
+                
+                let url = URL(string: "https://dataservice.accuweather.com/currentconditions/v1/55489?apikey=\(APIKeys.accuweather)")
                 let (data, response) = try await URLSession.shared.data(
                     from: url!
                 )
