@@ -89,15 +89,12 @@ struct ContentView: View {
                 //                     .foregroundStyle(.black)
                     .font(.system(size: 28))
                 //                    .preferredColorScheme(.light)
-                Text(minTemp == 0 ? "" : "Min:\(String(format: "%.1f", NSDecimalNumber(decimal: minTemp).doubleValue))")
-                    .font(.system(size: 20))
-                
                 
                 if(isMetric) {
-                    Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Metric.Value)c")
+                    Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Metric.Value)°C")
                         .font(.system(size: 56))
                 } else {
-                    Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Imperial.Value)")
+                    Text(currents.isEmpty ? "" : "\(currents[0].Temperature.Imperial.Value)°F")
                         .font(.system(size: 56))
                 }
                 
@@ -105,12 +102,16 @@ struct ContentView: View {
                     .font(.system(size: 26))
                 
                 if(isMetric){
-                    Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(maxTemp) c")
+                    Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(maxTemp) °C")
                         .font(.system(size: 18))
+                    Text(minTemp == 0 ? "" : "Min:\(String(format: "%.1f", NSDecimalNumber(decimal: minTemp).doubleValue)) °C")
+                        .font(.system(size: 20))
                 } else {
                     
-                    Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(String(format: "%.1f", NSDecimalNumber(decimal: maxTemp * 1.8 + 32).doubleValue))")
+                    Text(forecast?.DailyForecasts.isEmpty ?? true ? "" : " High:\(String(format: "%.1f", NSDecimalNumber(decimal: maxTemp * 1.8 + 32).doubleValue)) °F")
                         .font(.system(size: 18))
+                    Text(minTemp == 0 ? "" : "Min:\(String(format: "%.1f", NSDecimalNumber(decimal: minTemp * 1.8 + 32).doubleValue)) °F")
+                        .font(.system(size: 20))
                 }
                 
                 Toggle(isOn: $isMetric) {
@@ -141,6 +142,8 @@ struct ContentView: View {
                 Text("Hourly Forecast:")
                     .font(.system(size: 16))
                     .padding(.bottom, -5)
+                
+                // Hourly Forecast ScrollView
                 ScrollView(.horizontal) {
                     LazyHStack {
                         ForEach(twelveHourForecasts, id: \.EpochDateTime) { forecast in
@@ -151,7 +154,10 @@ struct ContentView: View {
                                     .fontWeight(.bold)
                                     .foregroundColor(Color.white)
                                     .padding(.top, 2)
-                                Text("\(String(format: "%.1f", NSDecimalNumber(decimal: forecast.Temperature.Value).doubleValue))°")
+                                Text(isMetric
+                                    ? "\(String(format: "%.1f", NSDecimalNumber(decimal: forecast.Temperature.Value).doubleValue))°C"
+                                    : "\(String(format: "%.1f", NSDecimalNumber(decimal: forecast.Temperature.Value * 1.8 + 32).doubleValue))°F"
+                                )
                                     .font(.system(size: 14))
                                     .foregroundColor(Color.white)
                                 Text(forecast.IconPhrase)
@@ -176,6 +182,7 @@ struct ContentView: View {
                     .font(.system(size: 16))
                     .padding(.bottom, -15)
                 
+                // Daily Forecast ScrollView
                 ScrollView(.horizontal) {
                     LazyHStack {
                         if let dailyForecasts = forecast?.DailyForecasts {
@@ -198,10 +205,16 @@ struct ContentView: View {
                                     Text("Night: \(day.Night.IconPhrase)")
                                         .font(.system(size: 14))
                                         .foregroundColor(.white)
-                                    Text("Min: \(String(format: "%.1f", NSDecimalNumber(decimal: day.Temperature.Minimum.Value).doubleValue))°")
+                                    Text(isMetric
+                                        ? "Min: \(String(format: "%.1f", NSDecimalNumber(decimal: day.Temperature.Minimum.Value).doubleValue))°C"
+                                        : "Min: \(String(format: "%.1f", NSDecimalNumber(decimal: day.Temperature.Minimum.Value * 1.8 + 32).doubleValue))°F"
+                                    )
                                         .font(.system(size: 14))
                                         .foregroundColor(.white)
-                                    Text("Max: \(String(format: "%.1f", NSDecimalNumber(decimal: day.Temperature.Maximum.Value).doubleValue))°")
+                                    Text(isMetric
+                                        ? "Max: \(String(format: "%.1f", NSDecimalNumber(decimal: day.Temperature.Maximum.Value).doubleValue))°C"
+                                        : "Max: \(String(format: "%.1f", NSDecimalNumber(decimal: day.Temperature.Maximum.Value * 1.8 + 32).doubleValue))°F"
+                                    )
                                         .font(.system(size: 14))
                                         .foregroundColor(.white)
                                 }
@@ -242,10 +255,17 @@ struct ContentView: View {
         }
     }
     
+    
+    
+    
+    
+    
+    
+    
     func grabCurrentData() {
         Task {
             do {
-                let url = URL(string: "https://dataservice.accuweather.com/currentconditions/v1/55489?apikey=BkI6MZNn1sO1hfoyGoO6fP0Wjun7Xz35")
+                let url = URL(string: "https://dataservice.accuweather.com/currentconditions/v1/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H")
                 let (data, response) = try await URLSession.shared.data(
                     from: url!
                 )
@@ -278,7 +298,7 @@ struct ContentView: View {
     func grabTwelveHour() {
         Task {
             do {
-                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/55489?apikey=BkI6MZNn1sO1hfoyGoO6fP0Wjun7Xz35&details=true&metric=true")
+                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H&details=true&metric=true")
                 let (data, response) = try await URLSession.shared.data(
                     from: url!
                 )
@@ -305,7 +325,7 @@ struct ContentView: View {
     func grabForecastData() {
         Task {
             do {
-                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/daily/5day/55489?apikey=BkI6MZNn1sO1hfoyGoO6fP0Wjun7Xz35&metric=true")
+                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/daily/5day/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H&metric=true")
                 let (data, response) = try await URLSession.shared.data(
                     from: url!
                 )
@@ -333,6 +353,3 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-
-
-
