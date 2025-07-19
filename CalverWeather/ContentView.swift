@@ -299,7 +299,7 @@ struct ContentView: View {
     func grabTwelveHour() {
         Task {
             do {
-                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H&details=true&metric=true")
+                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/55489?apikey=\(APIKeys.accuweather)&details=true&metric=true")
                 let (data, response) = try await URLSession.shared.data(
                     from: url!
                 )
@@ -326,7 +326,7 @@ struct ContentView: View {
     func grabForecastData() {
         Task {
             do {
-                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/daily/5day/55489?apikey=Qc1ej31WWglKsRnGyRNbRjA5atq9ei1H&metric=true")
+                let url = URL(string: "https://dataservice.accuweather.com/forecasts/v1/daily/5day/55489?apikey=\(APIKeys.accuweather)&metric=true")
                 let (data, response) = try await URLSession.shared.data(
                     from: url!
                 )
