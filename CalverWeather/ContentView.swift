@@ -82,7 +82,7 @@ struct ContentView: View {
                 Image(systemName: "baseball.diamond.bases")
                     .font(.system(size: 160))
                     .foregroundStyle(.red)
-                    .padding(.top, 50)
+                    .padding(.top, 30)
                     .padding(.bottom, 10)
                 
                 Text("Calver Weather App")
@@ -119,7 +119,7 @@ struct ContentView: View {
                 }
                 .font(.system(size: 18))
                 .frame(width: 115, height: 20, alignment: .center)
-                .padding(.top, 10)
+                .padding(.top, 5)
                 //            Button("Tap count: \(tapCount)") {
                 //                        tapCount += 1
                 //                    }
@@ -132,7 +132,12 @@ struct ContentView: View {
                 if let headline = forecast?.Headline.Text {
                     Text(headline)
                         .font(.system(size: 16))
-                        .padding(.bottom, 5)
+                            .padding(.bottom, 5)
+                            .frame(maxWidth: 350, alignment: .center)
+                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.center)
+                        
                 } else {
                     Text("No forecast available")
                         .font(.system(size: 16))
